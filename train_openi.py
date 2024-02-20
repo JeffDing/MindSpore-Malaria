@@ -27,8 +27,8 @@ from mindspore import nn
 from Vit import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--data_path', default="dataset", type=str, help='data path')
-parser.add_argument('--output_path', default="output/", type=str, help='use audio out')
+parser.add_argument('--data_path', default="/cache/data", type=str, help='data path')
+parser.add_argument('--output_path', default="/cache/output", type=str, help='use audio out')
 
 parser.add_argument('--data_url', metavar='DIR', default='', help='path to dataset')
 parser.add_argument('--train_url', metavar='DIR', default='', help='save output')
