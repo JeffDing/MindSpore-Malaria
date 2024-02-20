@@ -1,8 +1,7 @@
 # MindSport-Malaria
 
 ### 来源网站
-[基于昇思（MindSpore）的深度学习疟疾检测——疟疾病理切片的判读（有手就行的新手入门）
-：https://zhuanlan.zhihu.com/p/670851142](https://zhuanlan.zhihu.com/p/670851142)
+[基于昇思（MindSpore）的深度学习疟疾检测——疟疾病理切片的判读（有手就行的新手入门)](https://zhuanlan.zhihu.com/p/670851142)
 
 ### 文件使用方法
 
