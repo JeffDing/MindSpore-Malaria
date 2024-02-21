@@ -98,14 +98,6 @@ def datapipe(dataset, batch_size):
 
 data_path = args.data_dir
 
-dataset_train = ImageFolderDataset(dataset_dir=os.path.join(data_path, "train"),
-                                class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
-                                extensions=[".tiff", ".jpg"],
-                                shuffle=True)
-
-
-dataset_train = datapipe(dataset_train,1)
-
 class Attention(nn.Cell):
     def __init__(self,
                  dim: int,
@@ -365,26 +357,7 @@ network_loss = CrossEntropySmooth(sparse=True,
                                   reduction="mean",
                                   smooth_factor=0.1,
                                   num_classes=num_classes)
-# set checkpoint
-ckpt_config = CheckpointConfig(save_checkpoint_steps=step_size, keep_checkpoint_max=100)
-ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory=train_dir, config=ckpt_config)
 
-# initialize model
-# "Ascend + mixed precision" can improve performance
-ascend_target = (ms.get_context("device_target") == "Ascend")
-if ascend_target:
-    model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics={"acc"}, amp_level="O2")
-else:
-    model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics={"acc"}, amp_level="O0")
-
-
-# train model
-#model.train(epoch_size,
-#            dataset_train,callbacks=[TimeMonitor(), LossMonitor()])
-
-
-
-############################################################
 #verify
 
 dataset_val = ImageFolderDataset(os.path.join(data_path, "test"), shuffle=True)
@@ -406,13 +379,7 @@ dataset_val = dataset_val.map(operations=trans_val, input_columns=["image"])
 dataset_val = dataset_val.batch(batch_size=1, drop_remainder=True)
 
 # construct model
-#network = ViT()
-
-#MAGESIZE = 672
-#MAGESIZE = 1200
 network = ViT(image_size=IMAGESIZE)
-
-
 
 # load ckpt
 vit_path = args.ckpt_path
