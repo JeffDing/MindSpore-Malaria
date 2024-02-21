@@ -30,7 +30,6 @@ from Vit import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--device_target', type=str, default="Ascend", choices=['Ascend', 'GPU', 'CPU'],help='device where the code will be implemented (default: Ascend)')
 parser.add_argument('--data_path', default="/cache/data", type=str, help='data path')
-parser.add_argument('--output_path', default="/cache/output", type=str, help='use audio out')
 
 parser.add_argument('--data_url', metavar='DIR', default='', help='path to dataset')
 parser.add_argument('--train_url', metavar='DIR', default='', help='save output')
@@ -44,16 +43,16 @@ args = parser.parse_args()
 data_path = args.data_path
 
 if args.use_qizhi:
-        from openi import openi_multidataset_to_env as DatasetToEnv  
-        from openi import env_to_openi as EnvToOpeni
+    from openi import openi_multidataset_to_env as DatasetToEnv  
+    from openi import env_to_openi as EnvToOpeni
 
-        data_dir = '/cache/data'  
-        train_dir = '/cache/output'
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)      
-        if not os.path.exists(train_dir):
-            os.makedirs(train_dir)
-        DatasetToEnv(args.multi_data_url,data_dir)
+    data_dir = '/cache/data'  
+    train_dir = '/cache/output'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)      
+    if not os.path.exists(train_dir):
+        os.makedirs(train_dir)
+    DatasetToEnv(args.multi_data_url,data_dir)
 
 
 if args.use_zhisuan:
@@ -104,7 +103,7 @@ network_loss = CrossEntropySmooth(sparse=True,
                                   num_classes=num_classes)
 # set checkpoint
 ckpt_config = CheckpointConfig(save_checkpoint_steps=step_size, keep_checkpoint_max=100)
-ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory=args.output_path, config=ckpt_config)
+ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory=train_dir, config=ckpt_config)
 
 # initialize model
 # "Ascend + mixed precision" can improve performance
@@ -115,7 +114,7 @@ else:
     model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics={"acc"}, amp_level="O0")
 
 if args.use_qizhi:
-        EnvToOpeni(train_dir,args.train_url)
+    EnvToOpeni(train_dir,args.train_url)
 
 if __name__ == '__main__':
     # train model
