@@ -417,7 +417,7 @@ network = ViT(image_size=IMAGESIZE)
 
 
 # load ckpt
-vit_path = '/home/together/ai/Vit/vit_672_4832_0.801.ckpt'
+vit_path = args.ckpt_path
 param_dict = ms.load_checkpoint(vit_path)
 ms.load_param_into_net(network, param_dict)
 
