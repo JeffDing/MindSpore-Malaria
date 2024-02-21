@@ -19,6 +19,7 @@
 # RE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
+import argparse
 
 import mindspore as ms
 from mindspore.dataset import ImageFolderDataset
