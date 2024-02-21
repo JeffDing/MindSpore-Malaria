@@ -99,7 +99,8 @@ def datapipe(dataset, batch_size):
     dataset = dataset.batch(batch_size)
     return dataset
 
-data_path = '/home/together/ai/data/'
+data_path = args.data_dir
+
 dataset_train = ImageFolderDataset(dataset_dir=os.path.join(data_path, "train"),
                                 class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
                                 extensions=[".tiff", ".jpg"],
@@ -369,7 +370,7 @@ network_loss = CrossEntropySmooth(sparse=True,
                                   num_classes=num_classes)
 # set checkpoint
 ckpt_config = CheckpointConfig(save_checkpoint_steps=step_size, keep_checkpoint_max=100)
-ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory='./ViT', config=ckpt_config)
+ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory=train_dir, config=ckpt_config)
 
 # initialize model
 # "Ascend + mixed precision" can improve performance
@@ -439,3 +440,5 @@ else:
 result = model.eval(dataset_val)
 print(result)
 
+if args.use_qizhi:
+    EnvToOpeni(train_dir,args.train_url)
