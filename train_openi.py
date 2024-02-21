@@ -36,6 +36,9 @@ parser.add_argument('--data_url', metavar='DIR', default='', help='path to datas
 parser.add_argument('--train_url', metavar='DIR', default='', help='save output')
 parser.add_argument('--result_url', metavar='DIR', default='', help='save result url')
 parser.add_argument('--multi_data_url',help='path to multi dataset', default= '/cache/data/')
+parser.add_argument('--ckpt_url', type=str, default=None,help='load ckpt file path')
+parser.add_argument('--ckpt_path', type=str, default='/cache/pretrain/',help='load ckpt file path')
+parser.add_argument('--pretrain_url', type=str, default=None, help='load ckpt file path')
 parser.add_argument('--use_qizhi', type=bool, default=False,help='use qizhi')
 parser.add_argument('--use_zhisuan', type=bool, default=True, help='use zhisuan')
 
