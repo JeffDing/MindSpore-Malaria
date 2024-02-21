@@ -54,17 +54,17 @@ if args.use_qizhi:
         DatasetToEnv(args.multi_data_url,data_dir)
 
 
-    if args.use_zhisuan:
-        from openi import c2net_multidataset_to_env as DatasetToEnv  
-        from openi import env_to_openi as EnvToOpeni
+if args.use_zhisuan:
+    from openi import c2net_multidataset_to_env as DatasetToEnv  
+    from openi import env_to_openi as EnvToOpeni
 
-        data_dir = '/cache/data'  
-        train_dir = '/cache/output'
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)      
-        if not os.path.exists(train_dir):
-            os.makedirs(train_dir)
-        DatasetToEnv(args.multi_data_url,data_dir)
+    data_dir = '/cache/data'  
+    train_dir = '/cache/output'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)      
+    if not os.path.exists(train_dir):
+        os.makedirs(train_dir)
+    DatasetToEnv(args.multi_data_url,data_dir)
 
 dataset_train = ImageFolderDataset(dataset_dir=os.path.join(data_path, "train"),
                                 class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
