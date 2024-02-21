@@ -31,7 +31,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--device_target', type=str, default="Ascend", choices=['Ascend', 'GPU', 'CPU'],help='device where the code will be implemented (default: Ascend)')
 parser.add_argument('--data_path', default="/cache/data", type=str, help='data path')
 parser.add_argument("--epochs", default=10, type=int, help="epochs")
-parser.add_argument("--save_checkpoint_steps", default=10, type=int, help="epochs")
 
 parser.add_argument('--data_url', metavar='DIR', default='', help='path to dataset')
 parser.add_argument('--train_url', metavar='DIR', default='', help='save output')
@@ -69,6 +68,8 @@ if args.use_zhisuan:
         os.makedirs(train_dir)
     DatasetToEnv(args.multi_data_url,data_dir)
 
+ms.get_context("device_target"=args.device_target) 
+
 dataset_train = ImageFolderDataset(dataset_dir=os.path.join(data_path, "train"),
                                 class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
                                 extensions=[".tiff", ".jpg"],
@@ -104,7 +105,7 @@ network_loss = CrossEntropySmooth(sparse=True,
                                   smooth_factor=0.1,
                                   num_classes=num_classes)
 # set checkpoint
-ckpt_config = CheckpointConfig(save_checkpoint_steps=args.save_checkpoint_steps, keep_checkpoint_max=100)
+ckpt_config = CheckpointConfig(save_checkpoint_steps=step_size, keep_checkpoint_max=100)
 ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory=train_dir, config=ckpt_config)
 
 # initialize model
