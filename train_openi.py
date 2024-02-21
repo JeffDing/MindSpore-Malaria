@@ -68,7 +68,7 @@ if args.use_zhisuan:
         os.makedirs(train_dir)
     DatasetToEnv(args.multi_data_url,data_dir)
 
-ms.get_context("device_target"=args.device_target) 
+ms.get_context(device_target=args.device_target) 
 
 dataset_train = ImageFolderDataset(dataset_dir=os.path.join(data_path, "train"),
                                 class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
