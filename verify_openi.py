@@ -45,8 +45,6 @@ parser.add_argument('--pretrain_url', type=str, default=None, help='load ckpt fi
 
 args = parser.parse_args()
 
-data_path = args.data_path
-
 if args.use_qizhi:
     from openi import openi_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
