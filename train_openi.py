@@ -30,6 +30,7 @@ from Vit import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--device_target', type=str, default="Ascend", choices=['Ascend', 'GPU', 'CPU'],help='device where the code will be implemented (default: Ascend)')
 parser.add_argument('--data_path', default="/cache/data", type=str, help='data path')
+parser.add_argument("--epochs", default=10, type=int, help="epochs")
 
 parser.add_argument('--data_url', metavar='DIR', default='', help='path to dataset')
 parser.add_argument('--train_url', metavar='DIR', default='', help='save output')
@@ -80,7 +81,7 @@ dataset_train = datapipe(dataset_train,1)
 dataset_eval = datapipe(dataset_eval,1)
 
 # define super parameter
-epoch_size = 10
+epoch_size = args.epochs
 momentum = 0.9
 num_classes = 1000
 step_size = dataset_train.get_dataset_size()
