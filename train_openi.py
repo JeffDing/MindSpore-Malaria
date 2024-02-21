@@ -34,9 +34,6 @@ parser.add_argument('--data_url', metavar='DIR', default='', help='path to datas
 parser.add_argument('--train_url', metavar='DIR', default='', help='save output')
 parser.add_argument('--result_url', metavar='DIR', default='', help='save result url')
 parser.add_argument('--multi_data_url',help='path to multi dataset', default= '/cache/data/')
-parser.add_argument('--ckpt_url', type=str, default=None,help='load ckpt file path')
-parser.add_argument('--ckpt_path', type=str, default='/cache/pretrain/',help='load ckpt file path')
-parser.add_argument('--pretrain_url', type=str, default=None, help='load ckpt file path')
 parser.add_argument('--use_qizhi', type=bool, default=False,help='use qizhi')
 parser.add_argument('--use_zhisuan', type=bool, default=True, help='use zhisuan')
 
@@ -46,38 +43,28 @@ data_path = args.data_path
 
 if args.use_qizhi:
         from openi import openi_multidataset_to_env as DatasetToEnv  
-        from openi import pretrain_to_env as PretrainToEnv
         from openi import env_to_openi as EnvToOpeni
 
         data_dir = '/cache/data'  
         train_dir = '/cache/output'
-        pretrain_dir = '/cache/pretrain'
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)      
         if not os.path.exists(train_dir):
             os.makedirs(train_dir)
-        if not os.path.exists(pretrain_dir):
-            os.makedirs(pretrain_dir)
         DatasetToEnv(args.multi_data_url,data_dir)
-        PretrainToEnv(args.pretrain_url,pretrain_dir)
 
 
     if args.use_zhisuan:
         from openi import c2net_multidataset_to_env as DatasetToEnv  
-        from openi import pretrain_to_env as PretrainToEnv
         from openi import env_to_openi as EnvToOpeni
 
         data_dir = '/cache/data'  
         train_dir = '/cache/output'
-        pretrain_dir = '/cache/pretrain'
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)      
         if not os.path.exists(train_dir):
             os.makedirs(train_dir)
-        if not os.path.exists(pretrain_dir):
-            os.makedirs(pretrain_dir)
         DatasetToEnv(args.multi_data_url,data_dir)
-        PretrainToEnv(args.pretrain_url,pretrain_dir)
 
 dataset_train = ImageFolderDataset(dataset_dir=os.path.join(data_path, "train"),
                                 class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
