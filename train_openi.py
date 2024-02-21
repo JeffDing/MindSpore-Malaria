@@ -28,6 +28,7 @@ from mindspore import nn
 from Vit import *
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--device_target', type=str, default="Ascend", choices=['Ascend', 'GPU', 'CPU'],help='device where the code will be implemented (default: Ascend)')
 parser.add_argument('--data_path', default="/cache/data", type=str, help='data path')
 parser.add_argument('--output_path', default="/cache/output", type=str, help='use audio out')
 
