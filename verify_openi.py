@@ -403,6 +403,3 @@ else:
 # evaluate model
 result = model.eval(dataset_val)
 print(result)
-
-if args.use_qizhi:
-    EnvToOpeni(train_dir,args.train_url)
