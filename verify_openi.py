@@ -48,39 +48,39 @@ args = parser.parse_args()
 data_path = args.data_path
 
 if args.use_qizhi:
-        from openi import openi_multidataset_to_env as DatasetToEnv  
-        from openi import pretrain_to_env as PretrainToEnv
-        from openi import env_to_openi as EnvToOpeni
+    from openi import openi_multidataset_to_env as DatasetToEnv  
+    from openi import pretrain_to_env as PretrainToEnv
+    from openi import env_to_openi as EnvToOpeni
 
-        data_dir = '/cache/data'  
-        train_dir = '/cache/output'
-        pretrain_dir = '/cache/pretrain'
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)      
-        if not os.path.exists(train_dir):
-            os.makedirs(train_dir)
-        if not os.path.exists(pretrain_dir):
-            os.makedirs(pretrain_dir)
-        DatasetToEnv(args.multi_data_url,data_dir)
-        PretrainToEnv(args.pretrain_url,pretrain_dir)
+    data_dir = '/cache/data'  
+    train_dir = '/cache/output'
+    pretrain_dir = '/cache/pretrain'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)      
+    if not os.path.exists(train_dir):
+        os.makedirs(train_dir)
+    if not os.path.exists(pretrain_dir):
+        os.makedirs(pretrain_dir)
+    DatasetToEnv(args.multi_data_url,data_dir)
+    PretrainToEnv(args.pretrain_url,pretrain_dir)
 
 
-    if args.use_zhisuan:
-        from openi import c2net_multidataset_to_env as DatasetToEnv  
-        from openi import pretrain_to_env as PretrainToEnv
-        from openi import env_to_openi as EnvToOpeni
+if args.use_zhisuan:
+    from openi import c2net_multidataset_to_env as DatasetToEnv  
+    from openi import pretrain_to_env as PretrainToEnv
+    from openi import env_to_openi as EnvToOpeni
 
-        data_dir = '/cache/data'  
-        train_dir = '/cache/output'
-        pretrain_dir = '/cache/pretrain'
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)      
-        if not os.path.exists(train_dir):
-            os.makedirs(train_dir)
-        if not os.path.exists(pretrain_dir):
-            os.makedirs(pretrain_dir)
-        DatasetToEnv(args.multi_data_url,data_dir)
-        PretrainToEnv(args.pretrain_url,pretrain_dir)
+    data_dir = '/cache/data'  
+    train_dir = '/cache/output'
+    pretrain_dir = '/cache/pretrain'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)      
+    if not os.path.exists(train_dir):
+        os.makedirs(train_dir)
+    if not os.path.exists(pretrain_dir):
+        os.makedirs(pretrain_dir)
+    DatasetToEnv(args.multi_data_url,data_dir)
+    PretrainToEnv(args.pretrain_url,pretrain_dir)
 
 def datapipe(dataset, batch_size):
     mean = [0.485*255, 0.456*255, 0.406*255]
