@@ -121,10 +121,10 @@ if ascend_target:
 else:
     model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics={"acc"}, amp_level="O0")
 
-if args.use_qizhi:
-    EnvToOpeni(train_dir,args.train_url)
-
 if __name__ == '__main__':
     # train model
     model.fit(epoch_size,dataset_train,dataset_eval
               ,callbacks=callback)
+
+    if args.use_qizhi:
+        EnvToOpeni(train_dir,args.train_url)
