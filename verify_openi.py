@@ -43,7 +43,7 @@ parser.add_argument('--ckpt_url', type=str, default=None,help='load ckpt file pa
 parser.add_argument('--ckpt_path', type=str, default='/cache/pretrain/',help='load ckpt file path')
 parser.add_argument('--pretrain_url', type=str, default=None, help='load ckpt file path')
 
-args = parser.parse_args()
+args, unknown = parser.parse_known_args() # 在这里，args 包含已知参数，unknown包含未知参数
 
 if args.use_qizhi:
     from openi import openi_multidataset_to_env as DatasetToEnv  
