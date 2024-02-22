@@ -64,6 +64,8 @@ network_loss = CrossEntropySmooth(sparse=True,
 # set checkpoint
 ckpt_config = CheckpointConfig(save_checkpoint_steps=step_size, keep_checkpoint_max=100)
 ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory='./ViT', config=ckpt_config)
+callback=[TimeMonitor(), LossMonitor()]
+callback.append(ckpt_callback)
 
 # initialize model
 # "Ascend + mixed precision" can improve performance
@@ -76,4 +78,4 @@ else:
 if __name__ == '__main__':
     # train model
     model.fit(epoch_size,dataset_train,dataset_eval
-              ,callbacks=[TimeMonitor(), LossMonitor()])
+              ,callbacks=callback)
