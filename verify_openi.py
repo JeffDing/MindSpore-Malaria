@@ -81,6 +81,8 @@ if args.use_zhisuan:
     DatasetToEnv(args.multi_data_url,data_dir)
     PretrainToEnv(args.pretrain_url,pretrain_dir)
 
+ms.set_context(device_target=args.device_target) 
+
 def datapipe(dataset, batch_size):
     mean = [0.485*255, 0.456*255, 0.406*255]
     std = [0.229*255, 0.224*255, 0.225*255]
@@ -373,6 +375,7 @@ network_loss = CrossEntropySmooth(sparse=True,
 eval_metrics = {'Top_1_Accuracy': train.Top1CategoricalAccuracy(),
                 'Top_5_Accuracy': train.Top5CategoricalAccuracy()}
 
+ascend_target = (ms.get_context("device_target") == "Ascend")
 if ascend_target:
     model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics=eval_metrics, amp_level="O2")
 else:
