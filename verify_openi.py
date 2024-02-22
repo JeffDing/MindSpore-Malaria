@@ -316,6 +316,10 @@ class ViT(nn.Cell):
 
         return x
 
+from mindspore.nn import LossBase
+from mindspore.train import LossMonitor, TimeMonitor, CheckpointConfig, ModelCheckpoint
+from mindspore import train
+
 class CrossEntropySmooth(LossBase):
     """CrossEntropy."""
 
@@ -333,9 +337,6 @@ class CrossEntropySmooth(LossBase):
         loss = self.ce(logit, label)
         return loss
 
-from mindspore.nn import LossBase
-from mindspore.train import LossMonitor, TimeMonitor, CheckpointConfig, ModelCheckpoint
-from mindspore import train
 
 dataset_val = ImageFolderDataset(os.path.join(data_path, "test"), shuffle=True)
 
