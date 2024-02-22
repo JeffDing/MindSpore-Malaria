@@ -316,6 +316,23 @@ class ViT(nn.Cell):
 
         return x
 
+class CrossEntropySmooth(LossBase):
+    """CrossEntropy."""
+
+    def __init__(self, sparse=True, reduction='mean', smooth_factor=0., num_classes=1000):
+        super(CrossEntropySmooth, self).__init__()
+        self.onehot = ops.OneHot()
+        self.sparse = sparse
+        self.on_value = ms.Tensor(1.0 - smooth_factor, ms.float32)
+        self.off_value = ms.Tensor(1.0 * smooth_factor / (num_classes - 1), ms.float32)
+        self.ce = nn.SoftmaxCrossEntropyWithLogits(reduction=reduction)
+
+    def construct(self, logit, label):
+        if self.sparse:
+            label = self.onehot(label, ops.shape(logit)[1], self.on_value, self.off_value)
+        loss = self.ce(logit, label)
+        return loss
+
 from mindspore.nn import LossBase
 from mindspore.train import LossMonitor, TimeMonitor, CheckpointConfig, ModelCheckpoint
 from mindspore import train
