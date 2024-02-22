@@ -43,7 +43,7 @@ parser.add_argument('--model_url', type=str, default=None, help='load ckpt file 
 parser.add_argument('--use_qizhi', type=bool, default=False,help='use qizhi')
 parser.add_argument('--use_zhisuan', type=bool, default=True, help='use zhisuan')
 
-args = parser.parse_args()
+args, unknown = parser.parse_known_args() # 在这里，args 包含已知参数，unknown包含未知参数
 
 data_path = args.data_path
 
