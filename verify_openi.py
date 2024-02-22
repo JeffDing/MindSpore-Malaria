@@ -97,7 +97,7 @@ def datapipe(dataset, batch_size):
     dataset = dataset.batch(batch_size)
     return dataset
 
-data_path = args.data_dir
+data_path = args.data_path
 
 class Attention(nn.Cell):
     def __init__(self,
