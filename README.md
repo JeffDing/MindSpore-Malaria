@@ -8,7 +8,6 @@ train.py：训练文件
 verify.py：验证文件
 XXXX_openi：对应相应在启智平台上运行的文件
 predict.py：预测文件
-test.py：临时文件
 
 ### 预测方法
 预测文件放到```out/input/```目录下，并且命名为```input.jpg```
