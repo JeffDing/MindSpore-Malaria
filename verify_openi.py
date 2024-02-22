@@ -322,6 +322,27 @@ from mindspore.nn import LossBase
 from mindspore.train import LossMonitor, TimeMonitor, CheckpointConfig, ModelCheckpoint
 from mindspore import train
 
+dataset_val = ImageFolderDataset(os.path.join(data_path, "test"), shuffle=True)
+
+# define super parameter
+epoch_size = 10
+momentum = 0.9
+num_classes = 1000
+step_size = dataset_val.get_dataset_size()
+
+# construct model
+network = ViT(image_size=IMAGESIZE)
+
+lr = nn.cosine_decay_lr(min_lr=float(0),
+                        max_lr=0.00005,
+                        total_step=epoch_size * step_size,
+                        step_per_epoch=step_size,
+                        decay_epoch=10)
+
+# define optimizer
+network_opt = nn.Adam(network.trainable_params(), lr, momentum)
+# define loss function
+
 class CrossEntropySmooth(LossBase):
     """CrossEntropy."""
 
@@ -338,9 +359,6 @@ class CrossEntropySmooth(LossBase):
             label = self.onehot(label, ops.shape(logit)[1], self.on_value, self.off_value)
         loss = self.ce(logit, label)
         return loss
-
-
-dataset_val = ImageFolderDataset(os.path.join(data_path, "test"), shuffle=True)
 
 mean = [0.485*255, 0.456*255, 0.406*255]
 std = [0.229*255, 0.224*255, 0.225*255]
