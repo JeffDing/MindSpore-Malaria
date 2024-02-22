@@ -318,48 +318,6 @@ class ViT(nn.Cell):
 from mindspore.nn import LossBase
 from mindspore.train import LossMonitor, TimeMonitor, CheckpointConfig, ModelCheckpoint
 from mindspore import train
-#from download import download
-# define super parameter
-epoch_size = 10
-momentum = 0.9
-num_classes = 1000
-step_size = dataset_train.get_dataset_size()
-
-# construct model
-network = ViT(image_size=IMAGESIZE)
-
-lr = nn.cosine_decay_lr(min_lr=float(0),
-                        max_lr=0.00005,
-                        total_step=epoch_size * step_size,
-                        step_per_epoch=step_size,
-                        decay_epoch=10)
-
-# define optimizer
-network_opt = nn.Adam(network.trainable_params(), lr, momentum)
-# define loss function
-class CrossEntropySmooth(LossBase):
-    """CrossEntropy."""
-
-    def __init__(self, sparse=True, reduction='mean', smooth_factor=0., num_classes=1000):
-        super(CrossEntropySmooth, self).__init__()
-        self.onehot = ops.OneHot()
-        self.sparse = sparse
-        self.on_value = ms.Tensor(1.0 - smooth_factor, ms.float32)
-        self.off_value = ms.Tensor(1.0 * smooth_factor / (num_classes - 1), ms.float32)
-        self.ce = nn.SoftmaxCrossEntropyWithLogits(reduction=reduction)
-
-    def construct(self, logit, label):
-        if self.sparse:
-            label = self.onehot(label, ops.shape(logit)[1], self.on_value, self.off_value)
-        loss = self.ce(logit, label)
-        return loss
-
-network_loss = CrossEntropySmooth(sparse=True,
-                                  reduction="mean",
-                                  smooth_factor=0.1,
-                                  num_classes=num_classes)
-
-#verify
 
 dataset_val = ImageFolderDataset(os.path.join(data_path, "test"), shuffle=True)
 
