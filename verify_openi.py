@@ -242,6 +242,7 @@ from mindspore.common.initializer import Normal
 from mindspore.common.initializer import initializer
 from mindspore import Parameter
 
+num_classes = 1000
 
 def init(init_type, shape, dtype, name, requires_grad):
     """Init."""
