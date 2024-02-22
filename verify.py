@@ -18,118 +18,8 @@
 # ONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWA
 # RE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-
-
-# import mindspore
-# import mindspore.dataset as ds
-# from mindspore import Tensor, nn
-# from mindspore.dataset import vision, transforms
-# from mindspore.dataset import MnistDataset
-
-# class Network(nn.Cell):
-#     def __init__(self):
-#         super().__init__()
-#         self.flatten = nn.Flatten()
-#         self.dense_relu_sequential = nn.SequentialCell(
-#             nn.Dense(302*403*3, 512),
-#             nn.ReLU(),
-#             nn.Dense(512, 512),
-#             nn.ReLU(),
-#             nn.Dense(512, 10)
-#         )
-
-#     def construct(self, x):
-#         x = self.flatten(x)
-#         logits = self.dense_relu_sequential(x)
-#         return logits
-
-# def datapipe(dataset, batch_size):
-#     mean = [0.485, 0.456, 0.406]
-#     std = [0.229, 0.224, 0.225]
-#     image_transforms = [
-#         vision.Resize(size=(302,403)),
-#         vision.Rescale(1.0 / 255.0, 0),
-#         vision.Normalize(mean=mean, std=std),
-#         vision.HWC2CHW()
-#     ]
-
-#     dataset = dataset.map(image_transforms, 'image')
-#     dataset = dataset.batch(batch_size)
-#     return dataset
-
-
-# model = Network()
-
-# image_folder_dataset_dir = "data/train"
-# train_dataset = ds.ImageFolderDataset(dataset_dir=image_folder_dataset_dir,
-#                                 class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
-#                                 extensions=[".jpg"],decode=True)
-
-# image_folder_dataset_dir = "data/test"
-# test_dataset = ds.ImageFolderDataset(dataset_dir=image_folder_dataset_dir,
-#                                 class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
-#                                 extensions=[".jpg"],decode=True)
-
-# train_dataset = datapipe(train_dataset, 64)
-# test_dataset = datapipe(test_dataset, 64)
-
-# # train_dataset = MnistDataset('MNIST_Data/train')
-# # test_dataset = MnistDataset('MNIST_Data/test')
-
-# # train_dataset = datapipe(train_dataset, 64)
-# # test_dataset = datapipe(test_dataset, 64)
-
-# loss_fn = nn.CrossEntropyLoss()
-# optimizer = nn.SGD(model.trainable_params(), 1e-2)
-
-# def forward_fn(data, label):
-#     logits = model(data)
-#     loss = loss_fn(logits, label)
-#     return loss, logits
-
-# # Get gradient function
-# grad_fn = mindspore.value_and_grad(forward_fn, None, optimizer.parameters, has_aux=True)
-
-# # Define function of one-step training
-# def train_step(data, label):
-#     loss, grads = grad_fn(data, label)
-#     optimizer(grads)
-#     return loss
-
-# def train(model:Network, dataset):
-#     size = dataset.get_dataset_size()
-#     model.set_train()
-#     for batch, (data, label) in enumerate(dataset.create_tuple_iterator()):
-#         loss,grads = train_step(data, label)
-
-#         if batch % 100 == 0:
-#             loss, current = loss.asnumpy(), batch
-#             print(f"loss: {loss}  [{current:>3d}/{size:>3d}]")
-
-
-
-# def test(model, dataset, loss_fn):
-#     num_batches = dataset.get_dataset_size()
-#     model.set_train(False)
-#     total, test_loss, correct = 0, 0, 0
-#     for data, label in dataset.create_tuple_iterator():
-#         pred = model(data)
-#         total += len(data)
-#         test_loss += loss_fn(pred, label).asnumpy()
-#         correct += (pred.argmax(1) == label).asnumpy().sum()
-#     test_loss /= num_batches
-#     correct /= total
-#     print(f"Test: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
-
-# epochs = 100
-# for t in range(epochs):
-#     print(f"Epoch {t+1}\n-------------------------------")
-#     train(model, dataset=train_dataset)
-#     test(model, test_dataset, loss_fn)
-# print("Done!")
-
 import os
+import argparse
 
 import mindspore as ms
 from mindspore.dataset import ImageFolderDataset
@@ -138,6 +28,8 @@ import mindspore.dataset.vision as vision
 from mindspore import nn, ops
 
 IMAGESIZE = 672
+
+ms.set_context(device_target="Ascend") 
 
 def datapipe(dataset, batch_size):
     mean = [0.485*255, 0.456*255, 0.406*255]
@@ -155,14 +47,7 @@ def datapipe(dataset, batch_size):
     dataset = dataset.batch(batch_size)
     return dataset
 
-data_path = '/home/together/ai/data/'
-dataset_train = ImageFolderDataset(dataset_dir=os.path.join(data_path, "train"),
-                                class_indexing={"falciparum":0, "uninfected":1,"vivax":2},
-                                extensions=[".tiff", ".jpg"],
-                                shuffle=True)
-
-
-dataset_train = datapipe(dataset_train,1)
+data_path = "./data"
 
 class Attention(nn.Cell):
     def __init__(self,
@@ -307,6 +192,7 @@ from mindspore.common.initializer import Normal
 from mindspore.common.initializer import initializer
 from mindspore import Parameter
 
+num_classes = 1000
 
 def init(init_type, shape, dtype, name, requires_grad):
     """Init."""
@@ -383,12 +269,14 @@ class ViT(nn.Cell):
 from mindspore.nn import LossBase
 from mindspore.train import LossMonitor, TimeMonitor, CheckpointConfig, ModelCheckpoint
 from mindspore import train
-#from download import download
+
+dataset_val = ImageFolderDataset(os.path.join(data_path, "test"), shuffle=True)
+
 # define super parameter
 epoch_size = 10
 momentum = 0.9
 num_classes = 1000
-step_size = dataset_train.get_dataset_size()
+step_size = dataset_val.get_dataset_size()
 
 # construct model
 network = ViT(image_size=IMAGESIZE)
@@ -402,6 +290,7 @@ lr = nn.cosine_decay_lr(min_lr=float(0),
 # define optimizer
 network_opt = nn.Adam(network.trainable_params(), lr, momentum)
 # define loss function
+
 class CrossEntropySmooth(LossBase):
     """CrossEntropy."""
 
@@ -419,43 +308,13 @@ class CrossEntropySmooth(LossBase):
         loss = self.ce(logit, label)
         return loss
 
-network_loss = CrossEntropySmooth(sparse=True,
-                                  reduction="mean",
-                                  smooth_factor=0.1,
-                                  num_classes=num_classes)
-# set checkpoint
-ckpt_config = CheckpointConfig(save_checkpoint_steps=step_size, keep_checkpoint_max=100)
-ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory='./ViT', config=ckpt_config)
-
-# initialize model
-# "Ascend + mixed precision" can improve performance
-ascend_target = (ms.get_context("device_target") == "Ascend")
-if ascend_target:
-    model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics={"acc"}, amp_level="O2")
-else:
-    model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics={"acc"}, amp_level="O0")
-
-
-# train model
-#model.train(epoch_size,
-#            dataset_train,callbacks=[TimeMonitor(), LossMonitor()])
-
-
-
-############################################################
-#verify
-
-dataset_val = ImageFolderDataset(os.path.join(data_path, "test"), shuffle=True)
-
 mean = [0.485*255, 0.456*255, 0.406*255]
 std = [0.229*255, 0.224*255, 0.225*255]
 
-MAGESIZE = 672
-
 trans_val = [
     transforms.Decode(),
-    transforms.Resize(MAGESIZE + 32),
-    transforms.CenterCrop(MAGESIZE),
+    transforms.Resize(IMAGESIZE + 32),
+    transforms.CenterCrop(IMAGESIZE),
     transforms.Normalize(mean=mean, std=std),
     transforms.HWC2CHW()
 ]
@@ -464,16 +323,10 @@ dataset_val = dataset_val.map(operations=trans_val, input_columns=["image"])
 dataset_val = dataset_val.batch(batch_size=1, drop_remainder=True)
 
 # construct model
-#network = ViT()
-
-#MAGESIZE = 672
-#MAGESIZE = 1200
 network = ViT(image_size=IMAGESIZE)
 
-
-
 # load ckpt
-vit_path = '/home/together/ai/Vit/vit_672_4832_0.801.ckpt'
+vit_path = "./ckpt"
 param_dict = ms.load_checkpoint(vit_path)
 ms.load_param_into_net(network, param_dict)
 
@@ -486,6 +339,7 @@ network_loss = CrossEntropySmooth(sparse=True,
 eval_metrics = {'Top_1_Accuracy': train.Top1CategoricalAccuracy(),
                 'Top_5_Accuracy': train.Top5CategoricalAccuracy()}
 
+ascend_target = (ms.get_context("device_target") == "Ascend")
 if ascend_target:
     model = train.Model(network, loss_fn=network_loss, optimizer=network_opt, metrics=eval_metrics, amp_level="O2")
 else:
@@ -494,4 +348,3 @@ else:
 # evaluate model
 result = model.eval(dataset_val)
 print(result)
-

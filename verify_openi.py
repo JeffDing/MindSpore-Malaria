@@ -363,12 +363,10 @@ class CrossEntropySmooth(LossBase):
 mean = [0.485*255, 0.456*255, 0.406*255]
 std = [0.229*255, 0.224*255, 0.225*255]
 
-MAGESIZE = 672
-
 trans_val = [
     transforms.Decode(),
-    transforms.Resize(MAGESIZE + 32),
-    transforms.CenterCrop(MAGESIZE),
+    transforms.Resize(IMAGESIZE + 32),
+    transforms.CenterCrop(IMAGESIZE),
     transforms.Normalize(mean=mean, std=std),
     transforms.HWC2CHW()
 ]
