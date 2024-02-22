@@ -30,6 +30,7 @@ from Vit import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--device_target', type=str, default="Ascend", choices=['Ascend', 'GPU', 'CPU'],help='device where the code will be implemented (default: Ascend)')
 parser.add_argument('--data_path', default="/cache/data", type=str, help='data path')
+parser.add_argument('--output_path', default="output/", type=str, help='use audio out')
 parser.add_argument("--epochs", default=10, type=int, help="epochs")
 
 parser.add_argument('--data_url', metavar='DIR', default='', help='path to dataset')
@@ -110,7 +111,7 @@ network_loss = CrossEntropySmooth(sparse=True,
                                   num_classes=num_classes)
 # set checkpoint
 ckpt_config = CheckpointConfig(save_checkpoint_steps=step_size, keep_checkpoint_max=100)
-ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory=train_dir, config=ckpt_config)
+ckpt_callback = ModelCheckpoint(prefix='vit_b_16', directory=args.output_path, config=ckpt_config)
 callback=[TimeMonitor(), LossMonitor()]
 callback.append(ckpt_callback) 
 
