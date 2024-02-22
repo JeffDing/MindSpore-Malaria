@@ -9,6 +9,11 @@ verify.py：验证文件
 XXXX_openi：对应相应在启智平台上运行的文件
 predict.py：预测文件
 
+### 数据集
+该模型训练所用数据集来自于National Library of Medicine，以下为数据集下载链接：
+
+[https://lhncbc.nlm.nih.gov/LHC-research/LHC-projects/image-processing/malaria-datasheet.html](https://lhncbc.nlm.nih.gov/LHC-research/LHC-projects/image-processing/malaria-datasheet.html)
+
 ### 预测方法
 预测文件放到```out/input/```目录下，并且命名为```input.jpg```
 
